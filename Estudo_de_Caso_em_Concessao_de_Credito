@@ -1,0 +1,91 @@
+#estudo de caso em concessão de crédito
+#jaquison Ribeiro
+#importação das bibliotecas
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import OneHotEncoder #biblioteca para ajustar variaveis dummy
+from sklearn.preprocessing import MinMaxScaler #biblioteca para normalização de dados
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier # arvores de decisioes
+from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier,export_graphviz
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+import numpy as np
+
+#dowload do dataset
+dataset = pd.read_excel('/content/dataset.xlsx')
+
+#matriz de correlação entre dados
+plt.figure(figsize=(15,20))
+sns.heatmap(dataset_original.corr(), annot=True, cbar=False);
+#criação da variável prevista
+y = dataset['response']
+y.info()
+
+#separação das variaveis categóricas
+x_cat = dataset[['chk_acc','history','purpose','savings','employment','pers_status','guarantor','real_state','other_installment','housing','job','telephone','foreign']]
+
+#criando variáveis dummys com a biblioteca skitlean
+OneHotEncoder = OneHotEncoder()
+x_cat = OneHotEncoder.fit_transform(x_cat).toarray()
+x_cat
+
+dataset.shape
+
+#criano um datafrme e criando uma cópia dos dados originais
+x_cat = pd.DataFrame(x_cat)
+x_cat
+
+dataset.drop(['chk_acc','history','purpose','savings','employment','pers_status','guarantor','real_state','other_installment','housing','job','telephone','foreign'], axis= 1, inplace = True)
+
+#ajustando os indices do dataset
+dataset.index = x_cat.index
+
+#concatenando os datasets
+dataset = pd.concat([dataset, x_cat], axis=1)
+dataset.to_csv('/content/data/dataset.csv')
+
+scaler = MinMaxScaler()
+dataset_normalizado = scaler.fit_transform(dataset)
+
+#novo dataset
+dt_novo = pd.DataFrame(dataset_normalizado)
+y.to_csv()
+
+#normalização dos dados
+x = dataset_normalizado.copy()
+
+
+resultados_forest = []
+resultados_neural = []
+for i in range(30):
+  kfold = KFold(n_splits=10, shuffle=True, random_state=i)
+
+  random_forest = RandomForestClassifier()
+  scores = cross_val_score(random_forest, x, y, cv=kfold)
+  resultados_forest.append(scores.mean())
+
+  network = MLPClassifier(hidden_layer_sizes = (32, 32))
+  scores = cross_val_score(network, x, y, cv=kfold)
+  resultados_neural.append(scores.mean())
+resultados_forest = np.array(resultados_forest)
+resultados_neural = np.array(resultados_neural)
+
+resultados_forest.mean(), resultados_neural.mean()
+
+# Importa bibliotecas
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve
+
+
+# Divide em treino e teste 70-30
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.3, random_state=42)
+x
+
+
+X_train
+
